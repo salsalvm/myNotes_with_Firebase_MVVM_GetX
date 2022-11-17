@@ -18,11 +18,12 @@ class ScreenSplash extends StatelessWidget {
     return SplashScreenView(
       navigateRoute: const ScreenLanding(),
       duration: 2000,
+      backgroundColor: KColors.kBlack,
       imageSize: 250,
       imageSrc: KImages.splash,
       text: KString.myNotes,
       textType: TextType.ScaleAnimatedText,
-      textStyle: KStyle.heading(),
+      textStyle: KStyle.heading(color: KColors.kMuted),
     );
   }
 }

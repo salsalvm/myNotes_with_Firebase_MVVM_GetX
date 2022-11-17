@@ -11,7 +11,7 @@ class KString {
   static const String email = 'Email :  ';
   static const String submit = 'Submit';
   static const String light = 'super_user';
-  static const String myNotes = 'My Notes';
+  static const String myNotes = 'Firebase Notes';
 
 //----------user module strings----------//
 //its only reflect user module strings//

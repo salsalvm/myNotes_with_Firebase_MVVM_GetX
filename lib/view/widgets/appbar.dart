@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:my_notes_with_firebase_mvvm/res/strings.dart';
 
 class MainAppBar extends StatelessWidget {
   const MainAppBar({
@@ -26,7 +27,7 @@ class MainAppBar extends StatelessWidget {
         const Padding(
           padding: EdgeInsets.only(left: 100.0),
           child: Text(
-            'Real 11',
+            KString.myNotes,
             style: TextStyle(
               fontSize: 25,
               fontWeight: FontWeight.bold,

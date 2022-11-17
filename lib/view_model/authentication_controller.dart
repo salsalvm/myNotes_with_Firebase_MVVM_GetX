@@ -4,11 +4,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class FirebaseAuthentication {
+class AuthController extends GetxController {
   //firebase initialize
-  static Future<FirebaseApp> initializeFirebase() async {
+  Future<FirebaseApp> initializeFirebase() async {
     FirebaseApp firebaseApp = await Firebase.initializeApp();
 
     //  Add auto login logic
@@ -16,7 +17,10 @@ class FirebaseAuthentication {
     return firebaseApp;
   }
 
-  static Future<UserCredential> googleAuthentication() async {
+  //-----------simple google authentication--------//
+  //its  only user credential
+
+  Future<UserCredential> googleAuthentication() async {
     // Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
@@ -29,13 +33,14 @@ class FirebaseAuthentication {
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
-
+    update();
     // Once signed in, return the UserCredential
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
+  //------gogle authentication with user details---------//
   //google authentication
-  static Future<User?> signInWithGoogle({required BuildContext context}) async {
+  Future<User?> signInWithGoogle(BuildContext context) async {
     FirebaseAuth auth = FirebaseAuth.instance;
     User? user;
 
@@ -81,19 +86,20 @@ class FirebaseAuthentication {
         }
       }
     }
-
+    update();
     return user;
   }
 
-//sign out
-  static Future<void> signOut({required BuildContext context}) async {
+  //sign out
+  Future<void> signOut({required BuildContext context}) async {
     final GoogleSignIn googleSignIn = GoogleSignIn();
 
     try {
       if (!kIsWeb) {
-        await googleSignIn.signOut();
+        await googleSignIn.signOut(); //android and ios
       }
-      await FirebaseAuth.instance.signOut();
+      await FirebaseAuth.instance.signOut(); //work withweb
+      update();
     } catch (e) {
       log('Error signing out. Try again.');
     }

@@ -1,14 +1,14 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:my_notes_with_firebase_mvvm/res/strings.dart';
 import 'package:my_notes_with_firebase_mvvm/res/theme/theme.dart';
-import 'package:my_notes_with_firebase_mvvm/utils/firebase_authentication.dart';
 import 'package:my_notes_with_firebase_mvvm/utils/routes/route.dart';
 import 'package:my_notes_with_firebase_mvvm/utils/routes/routes_name.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await FirebaseAuthentication.initializeFirebase();
+  await Firebase.initializeApp();
   runApp(
     const MyApp(),
   );

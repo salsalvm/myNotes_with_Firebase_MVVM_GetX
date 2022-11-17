@@ -1,16 +1,24 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:my_notes_with_firebase_mvvm/res/asset/images.dart';
 import 'package:my_notes_with_firebase_mvvm/res/strings.dart';
 import 'package:my_notes_with_firebase_mvvm/res/styles.dart';
+import 'package:my_notes_with_firebase_mvvm/utils/firebase_authentication.dart';
 import 'package:my_notes_with_firebase_mvvm/utils/routes/routes_name.dart';
 import 'package:my_notes_with_firebase_mvvm/view/splash_screen.dart';
 import 'package:my_notes_with_firebase_mvvm/view/widgets/action_button.dart';
 
 import '../res/colors.dart';
 
-class ScreenLanding extends StatelessWidget {
+class ScreenLanding extends StatefulWidget {
   const ScreenLanding({super.key});
 
+  @override
+  State<ScreenLanding> createState() => _ScreenLandingState();
+}
+
+class _ScreenLandingState extends State<ScreenLanding> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -73,7 +81,7 @@ class ScreenLanding extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Column(
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Row(
@@ -88,7 +96,7 @@ class ScreenLanding extends StatelessWidget {
                         Navigator.pushNamed(context, KRoutesName.login);
                       },
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     ActionButton(
@@ -112,7 +120,7 @@ class ScreenLanding extends StatelessWidget {
                       Container(
                         height: 18,
                         width: 18,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           image: DecorationImage(
                             fit: BoxFit.fill,
                             filterQuality: FilterQuality.high,
@@ -120,15 +128,19 @@ class ScreenLanding extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 7,
                       ),
                       Text(KString.googleAuthButton, style: KStyle.title()),
                     ],
                   ),
-                  onTap: () {},
+                  onTap: () async {
+                    await FirebaseAuthentication.signInWithGoogle(
+                        context: context);
+                    setState(() {});
+                  },
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 30,
                 ),
               ],
