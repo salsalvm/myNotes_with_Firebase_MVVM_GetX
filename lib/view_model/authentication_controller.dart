@@ -44,25 +44,18 @@ class AuthController extends GetxController {
     // Once signed in, return the UserCredential
     userCredential =
         await FirebaseAuth.instance.signInWithCredential(credential);
-    log(userCredential.toString());
+
     userName = userCredential!.additionalUserInfo!.profile!['given_name']
         .toString()
         .toUpperCase();
+    log('-------- Acces Token is : ${userCredential!.credential!.accessToken} -------');
+    log('-------- Token is : ${userCredential!.credential!.token} -------');
     Navigator.pushNamed(context, KRoutesName.home);
-    sharePref.setString(
-        logged, userCredential!.credential!.accessToken.toString());
+    sharePref.setString(logged, userCredential!.credential!.token.toString());
     sharePref.get(logged);
 
     update();
     return userCredential!;
-  }
-
-  void gotoHome(BuildContext context) {
-    if (userCredential == null || userCredential.toString().isEmpty) {
-      Get.back();
-    } else {
-      Navigator.pushNamed(context, KRoutesName.home);
-    }
   }
 
   //------gogle authentication with user details---------//

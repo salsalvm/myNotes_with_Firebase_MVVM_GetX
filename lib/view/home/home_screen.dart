@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:my_notes_with_firebase_mvvm/res/colors.dart';
@@ -6,17 +7,50 @@ import 'package:my_notes_with_firebase_mvvm/res/styles.dart';
 import 'package:my_notes_with_firebase_mvvm/res/type.dart';
 import 'package:my_notes_with_firebase_mvvm/view/home/widgets/add_notes.dart';
 import 'package:my_notes_with_firebase_mvvm/view_model/authentication_controller.dart';
+import 'package:my_notes_with_firebase_mvvm/view_model/home_controller.dart';
 
 TextEditingController descController = TextEditingController();
 TextEditingController titleController = TextEditingController();
 
-class ScreenHome extends StatelessWidget {
+class ScreenHome extends StatefulWidget {
   ScreenHome({Key? key}) : super(key: key);
+
+  @override
+  State<ScreenHome> createState() => _ScreenHomeState();
+}
+
+class _ScreenHomeState extends State<ScreenHome> {
+  @override
+  void initState() {
+    intializeApp();
+    super.initState();
+  }
+
+  HomeController? data;
+
+  List notes = [];
+  intializeApp() {
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    data = HomeController();
+    data!.getDatasFromFirebase().then((value) => {
+          setState(() {
+            notes = value!;
+          })
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+            onPressed: () {
+              Navigator.canPop(context);
+            },
+            icon: const Icon(
+              Icons.arrow_back,
+              color: KColors.kBlack,
+            )),
         centerTitle: true,
         title: Text(
           '${authController.userName}  ${KString.myNotes}',
@@ -38,7 +72,7 @@ class ScreenHome extends StatelessWidget {
           children: [
             SizedBox(
               child: GridView.builder(
-                  itemCount: 4,
+                  itemCount: notes.length,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

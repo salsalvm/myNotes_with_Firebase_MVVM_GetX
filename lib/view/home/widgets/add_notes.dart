@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:my_notes_with_firebase_mvvm/res/colors.dart';
+import 'package:my_notes_with_firebase_mvvm/res/components/custom_text.dart';
 import 'package:my_notes_with_firebase_mvvm/res/styles.dart';
 import 'package:my_notes_with_firebase_mvvm/res/type.dart';
 import 'package:my_notes_with_firebase_mvvm/view/home/home_screen.dart';
@@ -48,7 +49,7 @@ class _AddNotesState extends State<AddNotes> {
             ),
             Text(
               'Add New Notes',
-              style: KStyle.title(),
+              style: KStyle.heading(color: KColors.kGrey),
             ),
             Padding(
               padding: const EdgeInsets.only(right: 8.0),
@@ -81,15 +82,20 @@ class _AddNotesState extends State<AddNotes> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text(
-                  'Title',
-                  style: KStyle.title(),
+                CustomText(
+                  controller: titleController,
+                  text: 'Title',
+                  style: KStyle.title(color: KColors.kWhite),
+                  mLength: 45,
                 ),
                 Expanded(
-                    child: Text(
-                  'Description',
-                  style: KStyle.content(),
-                )),
+                  child: CustomText(
+                    controller: descController,
+                    text: 'Description',
+                    style: KStyle.content(color: KColors.kGrey),
+                    mLine: null,
+                  ),
+                ),
               ],
             ),
           ),

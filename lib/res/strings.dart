@@ -12,6 +12,7 @@ class KString {
   static const String submit = 'Submit';
   static const String light = 'super_user';
   static const String myNotes = 'Firebase Notes';
+  static const String noNotes = 'no notes available';
 
 //----------user module strings----------//
 //its only reflect user module strings//
@@ -49,9 +50,6 @@ class KString {
   static const String loginNow = 'Login Now';
 
   static const String passwordFormField = 'Enter your password';
-  static const String placeFormField = 'Enter your place';
-  static const String errorPlace = 'Please enter a valid place';
-  static const String errorEmptyPlace = 'Please enter minimum 3 letter';
 //----------error validation message strings----------//
   static const String errorMail = 'Please enter valid mail';
   static const String errorFillPhone = 'Please fill your phone number';

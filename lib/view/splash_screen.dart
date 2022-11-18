@@ -34,10 +34,10 @@ class ScreenSplash extends StatelessWidget {
     userToken = sharePref.get(logged);
     if (userToken == false || userToken == null) {
       await Future.delayed(const Duration(seconds: 2));
-      Navigator.pushNamed(context, KRoutesName.landing);
+      Navigator.pushReplacementNamed(context, KRoutesName.landing);
     } else {
       await Future.delayed(const Duration(seconds: 2));
-      Navigator.pushNamed(context, KRoutesName.home);
+      Navigator.pushReplacementNamed(context, KRoutesName.home);
     }
   }
 }

@@ -98,21 +98,6 @@ class ScreenSignUp extends StatelessWidget {
                           return null;
                         },
                       ),
-                      const Divider(),
-                      CustomFormfield(
-                        name: KString.placeFormField,
-                        widget: Icon(Icons.place),
-                        controller: placeController,
-                        validator: (place) {
-                          if (!GetUtils.isUsername(place!)) {
-                            return KString.errorPlace;
-                          }
-                          if (place.toString().isEmpty) {
-                            return KString.errorEmptyPlace;
-                          }
-                          return null;
-                        },
-                      ),
                     ],
                   ),
                 ),
