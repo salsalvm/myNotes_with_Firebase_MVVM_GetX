@@ -1,4 +1,4 @@
-import 'package:my_notes_with_firebase_mvvm/view/home_screen.dart';
+import 'package:my_notes_with_firebase_mvvm/view/home/home_screen.dart';
 import 'package:my_notes_with_firebase_mvvm/view/landing_screen.dart';
 import 'package:my_notes_with_firebase_mvvm/view/login_screen.dart';
 import 'package:my_notes_with_firebase_mvvm/view/signup_screen.dart';
@@ -65,16 +65,16 @@ class KRoute {
               ScreenSignUp(),
         );
 
-      // //---home screen rout
-      // case KRoutesName.home:
-      //   return kPageBuilder(
-      //     (
-      //       BuildContext context,
-      //       Animation<double> animation,
-      //       Animation<double> secondaryAnimation,
-      //     ) =>
-      //         const ScreenHome(),
-      //   );
+      //---home screen rout
+      case KRoutesName.home:
+        return kPageBuilder(
+          (
+            BuildContext context,
+            Animation<double> animation,
+            Animation<double> secondaryAnimation,
+          ) =>
+              ScreenHome(),
+        );
 
       //---page not found screen rout
       default:

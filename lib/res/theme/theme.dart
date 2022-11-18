@@ -37,7 +37,7 @@ class KTheme {
     ),
 
 //--------------icon theme datas---------------//
-    iconTheme: const IconThemeData(color: KColors.kGrey),
+    iconTheme: const IconThemeData(color: KColors.kBlack),
     primaryIconTheme: const IconThemeData(color: KColors.kBlack),
 
 //--------------compponents color code---------------//

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:my_notes_with_firebase_mvvm/res/asset/images.dart';
 import 'package:my_notes_with_firebase_mvvm/res/strings.dart';
@@ -7,7 +8,9 @@ import 'package:my_notes_with_firebase_mvvm/res/styles.dart';
 import 'package:my_notes_with_firebase_mvvm/utils/firebase_authentication.dart';
 import 'package:my_notes_with_firebase_mvvm/utils/routes/routes_name.dart';
 import 'package:my_notes_with_firebase_mvvm/view/splash_screen.dart';
-import 'package:my_notes_with_firebase_mvvm/view/widgets/action_button.dart';
+import 'package:my_notes_with_firebase_mvvm/res/components/action_button.dart';
+import 'package:my_notes_with_firebase_mvvm/view/widgets/scaffold_back_ground.dart';
+import 'package:my_notes_with_firebase_mvvm/view_model/authentication_controller.dart';
 
 import '../res/colors.dart';
 
@@ -26,57 +29,7 @@ class _ScreenLandingState extends State<ScreenLanding> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Container(
-            height: 400,
-            decoration: const BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage(KImages.backgroundLanding),
-                    fit: BoxFit.fill)),
-            child: Stack(
-              children: <Widget>[
-                Positioned(
-                  left: 30,
-                  width: 80,
-                  height: 200,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                        image:
-                            DecorationImage(image: AssetImage(KImages.light1))),
-                  ),
-                ),
-                Positioned(
-                  left: 140,
-                  width: 80,
-                  height: 150,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                        image:
-                            DecorationImage(image: AssetImage(KImages.light2))),
-                  ),
-                ),
-                Positioned(
-                  right: 40,
-                  top: 40,
-                  width: 80,
-                  height: 150,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                        image:
-                            DecorationImage(image: AssetImage(KImages.clock))),
-                  ),
-                ),
-                Positioned(
-                  child: Container(
-                    margin: const EdgeInsets.only(top: 50),
-                    child: Center(
-                      child: Text(KString.light,
-                          style: KStyle.heading(color: KColors.kWhite)),
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
+          const ScaffoldBackGroundStyle(),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Column(
@@ -134,10 +87,8 @@ class _ScreenLandingState extends State<ScreenLanding> {
                       Text(KString.googleAuthButton, style: KStyle.title()),
                     ],
                   ),
-                  onTap: () async {
-                    await FirebaseAuthentication.signInWithGoogle(
-                        context: context);
-                    setState(() {});
+                  onTap: () {
+                    authController.googleAuthentication(context);
                   },
                 ),
                 const SizedBox(
@@ -150,4 +101,6 @@ class _ScreenLandingState extends State<ScreenLanding> {
       ),
     );
   }
+
+  AuthController authController = Get.put(AuthController());
 }

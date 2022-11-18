@@ -4,10 +4,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:my_notes_with_firebase_mvvm/utils/routes/routes_name.dart';
+import 'package:my_notes_with_firebase_mvvm/view/splash_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthController extends GetxController {
+  User? user;
+  String userName = '';
+  UserCredential? userCredential;
   //firebase initialize
   Future<FirebaseApp> initializeFirebase() async {
     FirebaseApp firebaseApp = await Firebase.initializeApp();
@@ -20,7 +26,8 @@ class AuthController extends GetxController {
   //-----------simple google authentication--------//
   //its  only user credential
 
-  Future<UserCredential> googleAuthentication() async {
+  Future<UserCredential> googleAuthentication(BuildContext context) async {
+    SharedPreferences sharePref = await SharedPreferences.getInstance();
     // Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
@@ -33,16 +40,35 @@ class AuthController extends GetxController {
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
-    update();
+
     // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+    userCredential =
+        await FirebaseAuth.instance.signInWithCredential(credential);
+    log(userCredential.toString());
+    userName = userCredential!.additionalUserInfo!.profile!['given_name']
+        .toString()
+        .toUpperCase();
+    Navigator.pushNamed(context, KRoutesName.home);
+    sharePref.setString(
+        logged, userCredential!.credential!.accessToken.toString());
+    sharePref.get(logged);
+
+    update();
+    return userCredential!;
+  }
+
+  void gotoHome(BuildContext context) {
+    if (userCredential == null || userCredential.toString().isEmpty) {
+      Get.back();
+    } else {
+      Navigator.pushNamed(context, KRoutesName.home);
+    }
   }
 
   //------gogle authentication with user details---------//
   //google authentication
   Future<User?> signInWithGoogle(BuildContext context) async {
     FirebaseAuth auth = FirebaseAuth.instance;
-    User? user;
 
     if (kIsWeb) {
       GoogleAuthProvider authProvider = GoogleAuthProvider();
@@ -93,10 +119,14 @@ class AuthController extends GetxController {
   //sign out
   Future<void> signOut({required BuildContext context}) async {
     final GoogleSignIn googleSignIn = GoogleSignIn();
+    SharedPreferences sharePref = await SharedPreferences.getInstance();
 
     try {
       if (!kIsWeb) {
         await googleSignIn.signOut(); //android and ios
+        Navigator.pushNamed(context, KRoutesName.landing);
+        sharePref.clear();
+        update();
       }
       await FirebaseAuth.instance.signOut(); //work withweb
       update();

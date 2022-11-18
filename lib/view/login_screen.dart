@@ -4,7 +4,7 @@ import 'package:my_notes_with_firebase_mvvm/res/strings.dart';
 import 'package:my_notes_with_firebase_mvvm/res/styles.dart';
 import 'package:my_notes_with_firebase_mvvm/utils/utils.dart';
 import 'package:my_notes_with_firebase_mvvm/view/signup_screen.dart';
-import 'package:my_notes_with_firebase_mvvm/view/widgets/action_button.dart';
+import 'package:my_notes_with_firebase_mvvm/res/components/action_button.dart';
 import 'package:my_notes_with_firebase_mvvm/view/widgets/appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
