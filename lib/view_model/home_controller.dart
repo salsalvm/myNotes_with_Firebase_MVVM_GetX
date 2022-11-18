@@ -1,35 +1,61 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
 
-class HomeController {
-  Future<List?> getDatasFromFirebase() async {
-    List notes = [];
+class HomeController extends GetxController {
+  List notes = [];
+  Future getDatasFromFirebase() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
+    QuerySnapshot querySnapshot;
     try {
-      QuerySnapshot<Object?> querySnapshot =
-          await firestore.collection('notes').get();
-      log(querySnapshot.toString());
+      querySnapshot = await firestore.collection('notes').get();
       if (querySnapshot.docs.isNotEmpty) {
         for (var doc in querySnapshot.docs.toList()) {
           Map<String, dynamic> items = {
             'notes': doc.id,
-            'desc': doc['desc'],
-            'title': doc['title']
+            'title': doc['title'],
+            'desc': doc['desc']
           };
-          log(doc.id.toString());
           notes.add(items);
-          log(notes.length.toString());
-          return notes;
+          return items;
         }
-      } else {
-        log('not datas');
       }
     } catch (e) {
-      log(e.toString());
+      // log(e.toString());
     }
-    return [];
+    update();
   }
 
-  addDatatoFirebase() {}
+  addDatatoFirebase(String title, String desc) async {
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    await firebaseFirestore
+        .collection('notes')
+        .add({'desc': desc, 'title': title});
+    getDatasFromFirebase();
+    update();
+  }
+
+  updateDatatoFirebase(String id, String title, String desc) async {
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    await firebaseFirestore
+        .collection('notes')
+        .doc(id)
+        .update({'title': title, 'desc': desc});
+    // getDatasFromFirebase();
+    update();
+  }
+
+  deleteDataFromFirebase(String id) async {
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    await firebaseFirestore.collection('notes').doc(id).delete();
+    // getDatasFromFirebase();
+    update();
+  }
+
+  @override
+  void onInit() {
+    getDatasFromFirebase();
+    super.onInit();
+  }
 }

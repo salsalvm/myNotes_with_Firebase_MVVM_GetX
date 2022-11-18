@@ -1,4 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:my_notes_with_firebase_mvvm/res/colors.dart';
@@ -12,32 +13,8 @@ import 'package:my_notes_with_firebase_mvvm/view_model/home_controller.dart';
 TextEditingController descController = TextEditingController();
 TextEditingController titleController = TextEditingController();
 
-class ScreenHome extends StatefulWidget {
+class ScreenHome extends StatelessWidget {
   ScreenHome({Key? key}) : super(key: key);
-
-  @override
-  State<ScreenHome> createState() => _ScreenHomeState();
-}
-
-class _ScreenHomeState extends State<ScreenHome> {
-  @override
-  void initState() {
-    intializeApp();
-    super.initState();
-  }
-
-  HomeController? data;
-
-  List notes = [];
-  intializeApp() {
-    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-    data = HomeController();
-    data!.getDatasFromFirebase().then((value) => {
-          setState(() {
-            notes = value!;
-          })
-        });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +26,7 @@ class _ScreenHomeState extends State<ScreenHome> {
             },
             icon: const Icon(
               Icons.arrow_back,
-              color: KColors.kBlack,
+              color: KColors.kWhite,
             )),
         centerTitle: true,
         title: Text(
@@ -70,63 +47,128 @@ class _ScreenHomeState extends State<ScreenHome> {
       body: SafeArea(
         child: Stack(
           children: [
-            SizedBox(
-              child: GridView.builder(
-                  itemCount: notes.length,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 5,
-                    crossAxisSpacing: 5,
-                    childAspectRatio: 1.2 / 1,
-                  ),
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        // showModalBottomSheet(
-                        //   isScrollControlled: true,
-                        //   backgroundColor: KColors.kBlack,
-                        //   context: context,
-                        //   builder: (ctx) {
-                        //     return AddNotes(
-                        //       type: ActionType.isView,
-                        //       desc: controller.noteList[index].desc,
-                        //       title: controller.noteList[index].title,
-                        //     );
-                        //   },
-                        // );
-                        // Get.to(
-
-                        // );
-                      },
-                      child: Card(
+            GetBuilder<HomeController>(
+              init: HomeController(),
+              builder: (controller) => controller.notes == null
+                  ? const Center(
+                      child: CircularProgressIndicator(
                         color: KColors.kWarnning,
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Flexible(
-                                  child: Text(
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                'controller.noteList[index].title',
-                                style: KStyle.title(),
-                              )),
-                              Flexible(
-                                  child: Text(
-                                maxLines: 10,
-                                overflow: TextOverflow.ellipsis,
-                                'controller.noteList[index].desc',
-                                style: KStyle.title(),
-                              )),
-                            ],
-                          ),
-                        ),
                       ),
-                    );
-                  }),
+                    )
+                  : controller.notes.isEmpty
+                      ? Center(
+                          child: Text(
+                            KString.noNotes,
+                            style: KStyle.heading(
+                              color: KColors.kGrey,
+                            ),
+                          ),
+                        )
+                      : SizedBox(
+                          child: GridView.builder(
+                              itemCount: controller.notes.length,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 10),
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                mainAxisSpacing: 5,
+                                crossAxisSpacing: 5,
+                                childAspectRatio: 1 / 1,
+                              ),
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                  onTap: () {},
+                                  child: Card(
+                                    color: KColors.kWhite.withOpacity(.9),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 10, right: 5),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(
+                                            height: 30,
+                                            width: 140,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                IconButton(
+                                                  onPressed: () {
+                                                    showModalBottomSheet(
+                                                      isScrollControlled: true,
+                                                      backgroundColor:
+                                                          KColors.kBlack,
+                                                      context: context,
+                                                      builder: (ctx) {
+                                                        return AddNotes(
+                                                          type:
+                                                              ActionType.isView,
+                                                          desc: controller
+                                                                  .notes[index]
+                                                              ['desc'],
+                                                          title: controller
+                                                                  .notes[index]
+                                                              ['title'],
+                                                          id: controller
+                                                                  .notes[index]
+                                                              ['id'],
+                                                        );
+                                                      },
+                                                    );
+                                                  },
+                                                  icon: const Icon(
+                                                    Icons.edit,
+                                                    color: KColors.kWarnning,
+                                                  ),
+                                                ),
+                                                IconButton(
+                                                  onPressed: () {
+                                                    controller
+                                                        .deleteDataFromFirebase(
+                                                            controller.notes[
+                                                                index]['id']);
+                                                  },
+                                                  icon: const Icon(
+                                                    Icons.delete,
+                                                    color: KColors.kError,
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                          Flexible(
+                                            child: Text(
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                              '${controller.notes[index]}',
+                                              style: KStyle.title(),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Flexible(
+                                              child: Text(
+                                            maxLines: 10,
+                                            overflow: TextOverflow.ellipsis,
+                                            '${controller.notes[index]['desc']}',
+                                            style: KStyle.title(
+                                                color: KColors.kGrey),
+                                          )),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }),
+                        ),
             ),
             Padding(
               padding: const EdgeInsets.only(right: 20.0, bottom: 10),
@@ -140,7 +182,7 @@ class _ScreenHomeState extends State<ScreenHome> {
                       backgroundColor: KColors.kBlack,
                       context: context,
                       builder: (ctx) {
-                        return AddNotes(
+                        return const AddNotes(
                           type: ActionType.isAdd,
                         );
                       },

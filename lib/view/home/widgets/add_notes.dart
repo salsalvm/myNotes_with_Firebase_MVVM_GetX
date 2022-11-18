@@ -6,12 +6,14 @@ import 'package:my_notes_with_firebase_mvvm/res/styles.dart';
 import 'package:my_notes_with_firebase_mvvm/res/type.dart';
 import 'package:my_notes_with_firebase_mvvm/view/home/home_screen.dart';
 import 'package:my_notes_with_firebase_mvvm/view/splash_screen.dart';
+import 'package:my_notes_with_firebase_mvvm/view_model/home_controller.dart';
 
 class AddNotes extends StatefulWidget {
   final ActionType type;
   final String? title;
+  final String? id;
   final String? desc;
-  const AddNotes({Key? key, required this.type, this.title, this.desc})
+  const AddNotes({Key? key, required this.type, this.title, this.desc, this.id})
       : super(key: key);
 
   @override
@@ -32,7 +34,7 @@ class _AddNotesState extends State<AddNotes> {
   Widget build(BuildContext context) {
     return ListView(
       children: [
-        SizedBox(
+        const SizedBox(
           height: 25,
         ),
         Row(
@@ -42,7 +44,7 @@ class _AddNotesState extends State<AddNotes> {
               onPressed: () {
                 Get.back();
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.arrow_back,
                 color: KColors.kGrey,
               ),
@@ -57,17 +59,23 @@ class _AddNotesState extends State<AddNotes> {
                   onPressed: () {
                     final title = titleController.text.trim();
                     final desc = descController.text.trim();
-
-                    if (title.isEmpty || desc.isEmpty) {
-                      Get.snackbar('No Content', 'Please write Anything',
-                          snackPosition: SnackPosition.BOTTOM,
-                          backgroundColor: KColors.kWhite);
-                      return;
+                    if (widget.type == ActionType.isAdd) {
+                      if (title.isEmpty || desc.isEmpty) {
+                        Get.snackbar('No Content', 'Please write Anything',
+                            snackPosition: SnackPosition.BOTTOM,
+                            backgroundColor: KColors.kWhite);
+                        return;
+                      } else {
+                        homeController.addDatatoFirebase(title, desc);
+                        Get.back();
+                      }
                     } else {
+                      homeController.updateDatatoFirebase(
+                          widget.id!, widget.title!, widget.desc!);
                       Get.back();
                     }
                   },
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.save,
                     color: KColors.kWhite,
                   )),
@@ -103,4 +111,6 @@ class _AddNotesState extends State<AddNotes> {
       ],
     );
   }
+
+  HomeController homeController = Get.put(HomeController());
 }
